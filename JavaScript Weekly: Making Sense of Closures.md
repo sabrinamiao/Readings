@@ -107,4 +107,3 @@ babbageCalendar.listEvents();
     8/7/2018: Coffee with Ada.
   */
   ```
-
