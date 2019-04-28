@@ -960,3 +960,300 @@ Closure are used extensively in higher-order functions as they allow us to creat
 This is done by creating a closure around a function's arguments that keeps them 'alive' in a return function.
 
 When a higher-order function returns another function, we can use a neat trick to create an anonymous return function and immediately invoke it with a value instead by using double parentheses.
+
+### **Currying**
+
+**Currying** is a process that involves the pratial application of functions.
+A function is said to be curried when not all arguments have been supplied to the function, so it returns another function that retains the arguments already provided, and expects the remaining arguments that were omitted when the original function was called.
+A final result is only returned once all the expected arguments have eventually been provided.
+
+Currying relies on higher-order functions that are able to return partially applied functions.
+All curried functions are higher-order functions because they return a function, but not all higher-order functions are curried.
+
+Currying allows you to turn a single function into a series of functions instead.
+This is useful if you find that you're frequently calling a function with the same argument.
+
+### **A General Curry Function**
+
+It's possible to use a `curry()` function to take any function and allow it to be partially applied.
+
+```
+function curry(func, ...oldArgs) {
+  return function(...newArgs){
+    const allArgs = [...oldArgs, ...newArgs]; return func(...allArgs);
+  }
+}
+```
+
+## Chapter 12 Object-Oriented Programming in JavaScript
+
+Object-oriented programming(OOP for short) is a style of programming that involves separating the code into objects that have properties and methods.
+This approach has the benefit of keeping related pieces of code encapsulated in objects that maintain state throughout the life of the program.
+The objects can also be reused or easily modified, as required.
+
+### **Object-Oriented Programming**
+
+There are three main concepts in OOP: encapsulation, polymorphism and inheritance.
+
+Encapsulation
+
+The inner workings are kept hidden inside the object and only the essential functionalities are exposed to the end user.
+In OOP, this involves keeping all the programming logic inside an object and making methods available to implement the functionality, without the outside world needing to know _how_ it's done.
+
+Polymorphism
+
+In OOP, this means various objects can share the same method, but also have the ability to override shared methods with a more specific implementation.
+
+Inheritance
+
+In OOP, this means we can take an object that already exists and inherit all its properties and methods.
+We can then improve on its functionality by adding new properties and methods.
+
+Classes
+
+Many object-oriented languages, such as Java and Ruby, are known as **class-based** languages.
+This is because they use a class to define a blueprint for an object.
+Objects are then created as an instance of that class, and inherit all the properties and methods of the class.
+
+JavaScript didn't have classes before ES6, and use the concept of using actual objects as the blueprint for creating more objects.
+This is known as a **prototype-based** language.
+Even though ES6 now supports classes, it still uses this prototypal inheritance model in the background.
+
+### **Constructor Functions**
+
+JavaScript contains a number of built-in constructor functions such as `Object`, `Array` and `Function` that can be used to create objects, arrays and functions instead of literals.
+
+Array constructor functions exhibit some strange behavior regarding the arguments supplied.
+If only one argument is given, it doesn't create an array with that argument as the first element.
+It sets the array's length property instead, and returns an array full of `undefined`.
+This results in an error being thrown if a floating point decimal number is provided as an argument.
+
+### **ES6 Class Declarations**
+
+Before ES6, constructor functions were the only way of achieving class-like behavior in JavaScript.
+
+ES6 introduced the new _class declaration_ syntax that does exactly the same thing as a constructor function, but looks much similar to writing a class in a class-based programming language.
+
+By convention, the names of constructor functions or class declarations are capitalized, which is the convention used for classes in class-based programming languages.
+
+### **The Constructor Property**
+
+All objects have a `constructor` property that returns the constructor function that created it.
+
+### **Static Methods**
+
+The `static` keyword can be used in class declarations to create a static methods.
+These are sometimes called class methods in other programming languages.
+A static method is called by the class directly rather than by instances of the class.
+
+### **Prototypal Inheritance**
+
+JavaScript uses a prototypal inheritance model.
+This means that every class has a prototype property that is shared by every instance of the class.
+So any properties or methods of a class's prototype can be accessed by every object instantiated by that class.
+
+### **The Prototype Property**
+
+If you don't have access to the class declaration, but still want to add properties and methods to the class, you can do this using the prototype property of the class.
+
+### **Finding Out the Prototype**
+
+There are a number of ways to find the prototype of an object.
+One way is to go via the constructor functions's `prototype` property.
+Another way is to use the `Object.getPrototypeOf()` method, which takes the object as a parameter.
+Many JavaScript engines also support the non-standard **_proto_** property.
+This is known as dunder proto, which is short for 'double underscore proto'.
+The **_proto_** property is not considered part of the official specification and it's recommended that `getPrototypeOf()` is used instead.
+
+### **Own Properties and Prototype Properties**
+
+Every object has a `hasOwnProperty()` method that can be used to check if a method is its own property, or is herited from the prototype.
+
+### **The Prototype Is Live!**
+
+The `prototype` object is live, so if a new property or method is added to the prototype, any instances of its class will inherit the new properties and methods automatically, even if that instance has already been created.
+
+It is not possible to overwrite the prototype by assigning it to a new object literal if class declarations are used.
+It is possible to do this if constructor functions are used, and it can cause a lot of headaches if you accidentally redefine the prototype.
+
+### **Overwriting Prototype Properties**
+
+An object instance can overwrite any properties or methods inherited from its prototype by simply assigning a new value to them.
+These properties will now become an 'own property' of the instance object.
+Any own properties will take precedence over the same `prototype` property when used in methods.
+
+When a property or method is called, the JavaScript engine will check to see if an object has its own property or method.
+If it does, it will use that one;
+otherwise, it will continue up the prototype chain until it finds a match or reaches the top of the chain.
+
+### **What Should the Prototype Be Used For?**
+
+The prototype can be used to add any new properties and methods after the class has been declared.
+It should be used to define any properties that will remain the same for every instance of the class.
+
+Be careful when using the prototype to set default values.
+They are shallow, so any changes to an array or object made by an instance will be reflected in the prototype, and therefore shared between all instances.
+A golden rule to remember is: Never use arrays or objects as a default value in prototype.
+This is not a problem if arrays or objects are set as default values from within the constructor function in the class declaration.
+
+To summarize, the following points should be considered when using classes and prototypes to create instances:
+
+- Create a class declaration that deals with any initialization, shared properties and methods.
+
+- Any extra methods and properties that need to be augmented to the class declaration after it's been defined can be added to the prototype.
+  These will be added to all instances, even those that have already been created.
+
+- Add any properties or methods that are individual to a particular instance can be augmented using assignment to that object (a mixin could be used to add multiple properties at once).
+
+- Be careful when overwriting the prototype completely - the constructor class needs to be reset.
+
+### **Public and Private Methods**
+
+By default, an object's methods are public in JavaScript.
+
+### **Inheritance**
+
+The Object Constructor
+
+The prototype of the `Object` constructor function has a large number of methods that are inherited by all objects.
+The reason why the prototype appears as an empty object literal is because all of its methods are not enumerable.
+
+Enumerable Properties
+
+Properties of objects in JavaScript are said to be enumerable and non-enumerable.
+If they aren't enumerable, this means they will not show up when a `for-in` loop is used to loop through an object's properties and methods.
+
+There is a method called `propertyIsEnumerable()` that every object has that can be used to check if a property is enumerable.
+
+Good practice is for all built-in methods to be non-enumerable and any user-defined methods to be made enumerable.
+
+### **Inheritance Using `extends`**
+
+A class can inherit from another class using the `extends` keyword in a class declaration.
+Inside the child class declaration, the keyword `super` refers to the parent class, and can be used to access any properties and call any methods of the parent class.
+
+### **Polymorphism**
+
+The concept of polymorphism means that different objects can have the same method, but implement it in different ways.
+
+When a method is called on a primitive value, JavaScript creates a wrapper object for the primitive, which converts it into an object and then calls the method on the object.
+
+One example of a function that uses the `toString()` method is the `console.log()` method.
+If an object is given as an argument to this method that isn't a string, it will call `toString()` on that object in the background and display the return value in the console.
+
+The `toString()` method is a good demonstration of polymorphism, since different objects have the same method but implement it differently.
+The advantage of this is that higher-level functions are able to call a single method, even though it may be implemented in various ways.
+
+### **Adding Methods to Built-in Objects**
+
+It is possible to add more methods to the prototype of JavaScript's built-in objects - such as `Number`, `String` and `Array` - to add more functionality.
+This practice is known as **monkey-patching**, but it's mostly frowned upon in the JavaScript community, despite it being an incredibly powerful technique.
+
+A useful example of monkey-patching is to add support for methods that are part of the specification, but not supported natively in some browsers.
+
+### **Property Attributes and Descriptors**
+
+It turns out that each property has a number of attributes that provide information about the property.
+These attributes are stored in a property descriptor, which is an object that contains values of each attribute.
+
+All object properties have the following attributes stored in a property descriptor:
+
+- _value_ - This is the value of the property and is _undefined_ by default.
+
+- _writable_ - This boolean value shows whether a property can be changed or not, and is false by default.
+
+- _enumerable_ - This boolean value shows whether a property will show up when the object is displayed in a `for in` loop and is `false` by default.
+
+- _consfigurable_ - This boolean value shows whether you can delete a property or change any of its attributes and is `false` by default.
+
+### **Getting and Setting Property Descriptors**
+
+`Object.getOwnPropertyDescriptor()`
+
+Instead of using assignment, we can add properties to an object using the `Object.defineProperty()` method.
+This provides more fine-grained control when adding new properties, as it allows each attribute to be set.
+
+### **Getters and Setters**
+
+An object property descriptor can have `get()` and `set()` methods instead of a value attribute.
+All objects must have one or the other, they can't have both.
+The `get()` and `set()` methods can be used to control how a property is set using assignment and the value that is returned when a property is queried.
+They are particularly useful if a property relies on the value of another property.
+
+The `get` and `set` property descriptors are particularly useful for controlling the getting and setting of properties in classes.
+
+### **Creating Objects from Other Objects**
+
+`Object.create()`
+
+### **Object-Based Inheritance**
+
+A new object can be created and initialized in a single line by adding the call to the `init()` method at the end of the line that creates the object.
+
+Object Prototype Chain
+
+Creating objects from objects will create a prototype chain.
+The `instanceOf` operator will not work when objects have been created this way.
+It only works when using constructor functions to create objects.
+
+### **Mixins**
+
+A mixin is a way of adding properties and methods of some objects to another object without using inheritance.
+It allows more complex objects to be created by 'mixing' basic objects together.
+
+Basic mixin functionality is provided by the `Object.assign()` method.
+This will assign to the object provided as the first argument all of the properties from any objects provided as further arguments.
+
+When objects are copied by assignment, they are only copied by reference.
+This means that another object is not actually created in memory;
+the new reference will just point to the old object.
+Any changes that are made to either objects will affect both of them.
+This is known as making a shallow copy of an object.
+A deep or hard copy will create a completely new object that has all the same properties as the old object.
+The difference is that when a hard copy is changed, the original remains the same.
+But when a shallow copy is changed, the original changes too.
+
+### **Factory Functions**
+
+A factory function is a function that can be used to return an object.
+
+### **Binding `this`**
+
+Use `that = this`
+
+A common solution is to set the variable `that` to equal `this` before the nested function, and refer to `that` in the nested function instead of `this`.
+
+You might also see `self` or `_this` used to maintain scope in the same way.
+
+Use `bind(this)`
+
+The `bind()` method is a method for all functions and is used to set the value of `this` in the function.
+If `this` is provided as an argument to `bind()` while it's still in scope, any reference to `this` inside the nested function will be bound to the object calling the original method.
+
+Use `for-of` Instead Of `forEach()`
+
+ES6 introduced the `for-of` syntax for arrays and this does not require a nested function to be used.
+
+Use Arrow Functions
+
+Arrow functions were introduced in ES6, and one of the advantages of using them is that they don't have their own `this` context, so `this` remains bound to the original object making the function call.
+For this reason, arrow functions should be used when anonymous functions are required in callbacks.
+
+### **Borrowing Methods from Prototypes**
+
+It’s possible to borrow methods from objects without having to inherit all their properties and methods.
+This is done by making a reference to the function that you want to borrow (that is, without parentheses so that it isn’t invoked).
+
+Borrowing Array Methods
+
+There are many array-like objects in JavaScript, such as the `arguments` object that's available in functions, and the node lists that many of the DOM methods return.
+
+The `call()` method takes the object that the function is to be applied to as its first argument, then the usual arguments come afterwards。
+
+`Array.from()` method can be used to turn an array-like object into an array.
+Alternatively, the spread operator can be used to easily turn an array-like object into an array.
+
+### **Composition Over inheritance**
+
+This approach advocates creating small objects that describe single tasks or behaviors and using them as the building blocks for more complex objects.
+This is similar to the idea of pure functions.
