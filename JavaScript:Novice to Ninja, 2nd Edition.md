@@ -1257,3 +1257,407 @@ Alternatively, the spread operator can be used to easily turn an array-like obje
 
 This approach advocates creating small objects that describe single tasks or behaviors and using them as the building blocks for more complex objects.
 This is similar to the idea of pure functions.
+
+## Chapter 13 Ajax
+
+Ajax is a technique that allows web pages to communicate asynchronously with a server, and it dynamically updates web pages without reloading.
+This enables data to be sent and received in the background, as well as portions of a page to be updated in response to user events, while the rest of the program continues to run.
+
+### **Clients and Servers**
+
+A client, such as a web browser, will request a resource from a server, which processes the request and sends back a response to the client.
+Ajax allows JavaScript to request resources from a server on behalf of the client.
+The resources requested are usually JSON data or small fragments of text or HTML rather than a whole web page.
+
+The same-origin policy in browsers blocks all requests from a domain that is different from the page making the request.
+This policy is enforced by all modern browsers and is to stop any malicious JavaScript being run from an external source.
+The problem is that the APIs of many websites rely on data being transferred across domains.
+
+Cross-origin resource sharing(CORS) is a solution to this problem as it allows resources to be requested from another website outside the original domain.
+The CORS stardard works by using HTTP headers to indicate which domains can receive data.
+A website can have the necessary information in its headers to allow external sites access to its API data.
+
+### **A Brief History of Ajax**
+
+In 1999, Microsoft implemented the XMLHTTP ActiveX control in Internet Explorer 5.
+Asynchronous loading techniques started to be noticed when Google launched Gmail and Google Maps in 2004 and 2005 respectively.
+These web applications used asynchronous loading techniques to enhance the user experience by changing the parts of the page without a full refresh.
+
+The term 'Ajax' was coined by Jesse James Garrett in 2005 in the article "Ajax: A New Approach to Web Applications", where he referred to techniques being used by Google in its recent web applications.
+Ajas was a neat acronym that referred to the different parts of the process being used: Asynchronous JavaScript and XML.
+
+Asynchronous
+
+When a request for data is sent, the program doesn't have to stop and wait for the response.
+It can carry on running, waiting for an event to fire when a response is received.
+By using callbacks to manage this, programs are able to run in an efficient way, avoiding lag as data is transferred back and forth.
+
+JavaScript
+
+Ajax enabled JavaScript to send requests and receive responses from a server, allowing content to be updated in real time.
+
+XML
+
+When the term Ajax was originally coined, XML documents were often used to return data.
+Many different types of data can be sent, but by far the most commonly used in Ajax nowadays is JSON, which is more lightweight and easier to parse than XML.
+JSON also has the advantage of being natively supported in JavaScript, so you can deal with JavaScript objects rather than having to parse XML files using DOM methods.
+
+API
+
+An application programming interface(API) is a collection of methods that allows external access to another program or service.
+
+### **The Fetch API**
+
+The Fetch API uses promises to avoid callback hell, and also streamlines a number of concepts that had become cumbersome when using the XMLHttpRequest object.
+
+Basic Usage
+
+The Fetch API provides a global `fetch()` method that only has one mandatory argument, which is the URL of the resource you wish to fetch.
+
+Response Interface
+
+The Fetch API introduced the Response interface that deals with the object that's returned when the promise is fulfilled.
+Response objects have a number of properties and methods that allow us to process the response effectively.
+
+Some other properties of the Response object are:
+
+- _headers_ - A Headers object containing any headers associated with the response
+
+- _url_ - A string containing the URL of response.
+
+- _redirected_ - A boolean value that specifies if the response is the result of a redirect.
+
+- _type_ - A string value of 'basic', 'cors', 'error' or 'opaque'.
+  A value of 'basic' is used for a response from the same domain.
+  A value of 'cors' means the data was received from a valid cross-origin request from a different domain.
+  A value of 'opaque' is used for a response received from 'no-cors' request from another domain, which means access to the data will be severely restrcted.
+  A value of 'error' is used when network error oc
+
+Redirects
+
+The `redirect()` method can be used to redirect to another URL.
+It creates a new promise that resolves to the response from the redirected URL.
+
+At the present time, there is no support for the `redirect()` method in any browser.
+
+Text Responses
+
+The `text()` method takes a stream of text from the response, reads it to completion and then returns a promise that resolves to a USVSting object that can be treated as a string in JavaScript.
+
+File Responses
+
+The `blob()` method is used to read a file of raw data, such as an image or spreadsheet.
+Once it has read the whole file, it returns a promise that resolves with a `blob` object.
+
+JSON Responses
+
+The `json()` method is used to deal with these by transforming a stream of JSON data into a promise that resolves to a JavaScript object.
+
+Creating Response Objects
+
+You can create your own response objects using a constructor function.
+The first argument is the data that is to be returned.
+The second argument is an object that can be used to provide values for any of the properties listed above.
+These can be useful if you are creating an API that needs to send a response, or if you need to send a dummy response for testing purposes.
+
+Request Interface
+
+Request objects are created using the `Request()` constructor, and include the following properties:
+
+- _url_ - The URL of the requested resource(the only property that is required).
+
+- _method_ - A string that specifies which HTTP method should be used for the request.
+  By default, this is 'GET'.
+
+- _headers_ - This is a `Headers` object that provides details of the request's headers.
+
+- _mode_ - Allows you to specify if CORS is used or not.
+  CORS is enabled by default.
+
+- _cache_ - Allows you to specify how the request will use the browser's cache.
+
+- _credentials_ - Let you specify if cookies should be allowed with the request.
+
+- _redirect_ - Specifies what to do if the response returns a redirect.
+  There's a choice of three values: 'follow'(the redirect is followed), 'error'(an error is thrown) or 'manual'(the user has to click on a link to follow the redirect).
+
+The Web is built upon the Hypertext Transfer Protocol, or HTTP.
+HTTP verbs, also known as HTTP methods are the what HTTP uses to tell the server what type of request is being made, which then determines the server will deal with the request.
+
+The five most commonly used verbs when dealing with resources on the web are:
+
+- GET requests to retrieve resources.
+
+- POST requests, usually used to create a resource but can actually perform any task.
+
+- PUT requests to upsert, which means insert a resource or update it entirely.
+
+- PATCH requests to make partial updates to a resource.
+
+- DELETE requests to delete a resource.
+
+Headers Interface
+
+HTTP headers are used to pass on any additional information about a request or response.
+Typical information contained in headers includes the file-type of the resource, cookie information, authentication information and when the resource was last modified.
+
+The Fetch API introduced a `Headers` interface, which can be used to create a Headers object, which can then be added as a property of Request and Response objects.
+
+A `Headers` object includes the following properties and methods that can be used to access information about the headers, as well as edit the header information.
+
+`has()` - Can be used to check if the headers object contains the header provided as an argument.
+
+`get()` - Returns the value of the header provided as an argument.
+
+`set()` - Can be used to set a value of an already existing header, or create a new header with the value provided as an argument if it does not already exist.
+
+`append()` - Adds a new header to the headers object.
+
+`delete()` - Removes the header provided as an argument.
+
+`keys()`,`values()` and `entries()` - Iterators that can be used to iterate over the headers key, values or entries(key and value pairs).
+
+FormData
+
+The Fetch API includes the `FormData` interface, which makes it much easier to submit information in forms using Ajax.
+
+## Chapter 14 HTML5 APIs
+
+### **The `data-` Attribute**
+
+The `data-` attribute is a way of embedding data in a web page using custom attributes that are ignored by the browser.
+
+The names of these attributes can be decided by the developer, but they must use the following format:
+
+- Start with `data-`.
+
+- Contain only lowercase letters, numbers, hyphens, dots, colons or underscores.
+
+- Include an optional string value.
+
+The information contained in the attributes can be used to identify particular elements.
+The values of the attributes can also be used to filter different elements.
+Each element has a dataset property that can be used to access any `data-` attributes it contains.
+
+The restriction of only using a string value can be overcome by encoding any JavaScript object or value as a JSON string, then performing type-conversion later, as required.
+
+Data attributes provide a convenient way of adding data directly into the HTML markup, enabling a richer user experience.
+
+### **HTML5 APIs**
+
+HTML5 Web Storage
+
+The Web Storage API provides a key-value store on the client's computer that is similar to using cookies but has fewer restrictions, more storage capacity, and is generally easier to use.
+
+The Web Storage API has some crucial differences with cookies:
+
+- Information stored is not shared with the server on every request.
+
+- Information is available in multiple windows of the browser(but only if the domain is the same).
+
+- Storage capacity limit is much larger than the 4KB limit for cookies.
+
+- Any data stored does not automatically expire as it does with cookies.
+  This potentially makes cookies a better choice for something like showing a popup once a day.
+
+The event object for event `storage` sent by the event listener to the callback has a number of properties that provide information about the updated item:
+
+- `key` tells us the key of the item that changed.
+
+- `newValue` tells us the new value to which it has been changed.
+
+- `oldValue` tells us the previous value before it was changed.
+
+- `storageArea` tells us if it is stored in local or session storage.
+
+The fact that only strings can be saved might seem like a restriction at first, but by using JSON, we can store any JavaScript object in local storage.
+
+Geolocation
+
+`navigator.geolocation.getCurrentPosition(youAreHere)`
+
+```
+function youAreHere(position) {
+  console.log(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
+}
+```
+
+The `position` object has several other properties that can be used to find out information about the location and movement of the device:
+
+- `position.speed` property returns the ground speed of the device in meters per second.
+
+- `position.altitude` property returns an estimate of the device's altitude in meters above the WGS84 ellipsoid, which is a standard measurement for the center of the Earth.
+
+- `position.heading` property returns the direction the device is moving in.
+  This is measured as a bearing in degrees, clockwise from North.
+
+- `position.timestamp` property returns the time that the position information was recorded.
+
+- `position.accuracy` property returns the accuracy of the latitude and longitude properties in meters.
+
+- `position.altitudeAccuracy` property returns the accuracy of the altitude property in meters.
+
+the `geolocation` object has a `watchPosition()` method that will call a callback function every time the position of the device is updated.
+This method return an ID that can be used to reference the position being watched.
+
+The `clearWatch()` method can be used to stop the callback being called, using the ID of the watch as an argument.
+
+Web Workers
+
+Web Workers allow processes to be run in the background, adding support for concurrency in JavaScript.
+The idea is that any processes that could take a long time are carried out in the background, so a website will continue to function without fear of the dreaded'script has become unresponsive' message that occurs when a script runs for too long.
+
+Service Workers
+
+The Service Worker API allows a worker script to run in the background with the added benefit of being able to intercept network requests.
+This allows you to take alternative action if the network is offline, and effectively create app-like offline experiences.
+Service workers also allow access to push notifications and background syncing.
+Service workers require a secure network to run on HTTPS to avoid any malicious code hijacking network requests.
+
+Websockets
+
+Websocket is a new protocol that allows two-way communication with a server - also known as push messaging.
+This means that a connection is kept open and responses are 'pushed' to the client as soon as they are received.
+
+Notifications
+
+The Notification API allows you to show messages using the system's notifications.
+This is usually a popup in the corner of the screen, but it changes depending on the operating system.
+An advantage of using the system notification is that they will still be displayed even if the web page that calls them isn't the current tab.
+
+Multimedia
+
+Audio and video elements have a number of properties and methods to control the playback of the clip:
+
+- The `play()` method will start the clip playing from its current position.
+
+- The `pause()` method will pause the clip at its current position.
+
+- The `volume` property is a number that can be used to set the audio volume.
+
+- The `muted` property is a boolean value that can be used to mute the audio.
+
+- The `currentTime` property is a number value that can be used to jump to another part of the clip.
+
+- The `playbackRate` property is used to fast-forward or rewind the clip by changing its value.
+  A value of 1 is playback at normal speed.
+
+- The `loop` property is a boolean value that can be set to `true` to make the clip repeat in a loop.
+
+- The `duration` property can be used to see how long the clip lasts.
+
+Audio and video clips also have a number of events that will fire when they occur:
+
+- The `play` event, which fires when the clip starts and when it resumes after a pause.
+
+- The `pause` event, which fires when the clip is paused.
+
+- The `volumechange` event, which fires when the volume is changed.
+
+- The `loadedmetadata` event, which fires when all the video's metadata has loaded.
+
+### **Drawing with Canvas**
+
+The `canvas` element was introduced to allow graphics to be drawn onto a web page in real time using JavaScript.
+A `canvas` element is a rectangular element on the web page.
+It has a coordinate system that starts at (0,0) in the top-left corner.
+
+- The `getContext()` method is used to access the context.
+
+- The fill and stroke colors can be changed by assigning a CSS color to the `fillStyle` and `strokeStyle` properties respectively.
+
+- The `lineWidth` property can be used to set the width of any line strokes drawn onto the canvas.
+  It defaults to one pixel and remains the same until it's changed.
+
+- The `fillRect()` method can draw a filled-in rectangle.
+  The first two parameters are the coordinates of the top-left corner, the third parameter is the width, and the last parameter is the height.
+
+- The `strokeRect()` method works in the same way, but produces a rectangle that is not filled in.
+
+- Straight lines can be drawn employing the `moveTo()` and `lineTo()` methods.
+  These methods can be used together to produce a path.
+
+- Nothing will actually be drawn onto the canvas until the `stroke()` method is called.
+
+- The `arc()` method can be used to draw an arc of a given radius from a particular point.
+  The first two parameters are the coordinates of the center of the arc; the next parameter is the radius, followed by the start angle, then the finish angle.
+  The last parameter is a boolean value that says whether the arc should be drawn counter-clockwise.
+
+- The `fillText()` method is used to write text onto the canvas.
+  The first parameter is the text to be displayed, while the next two parameters are the x and y coordinates, respectively.
+  The `font` property can be used to set the font style used, otherwise the style is inherited from the `canvas` element's CSS setting.
+
+### **Shims and Polyfills**
+
+The terms shim and polyfill are often used interchangeably.
+The main difference between them is that a shim is a piece of code that adds some missing functionality to a browser, although the implementation method may differ slightly fromt the standard API.
+A polyfill is a shim that achieves the same functionality, while also using the API commands that would be used if the feature was supported natively.
+
+## Chapter 15 Modern JavaScript Development
+
+### **ES6 Modules**
+
+- All code in modules is always in strict mode without the need for 'use strict' and there is no way to opt out of this.
+
+- A module has its own global scope, so any variables created in the top-level of a module can only be accessed within that module.
+
+- The value of `this` in the top level of a module is `undefined`, rather than the global object.
+
+- You can't use HTML-style comments in modules.
+
+Default Exports
+
+**Default exports** refer to a single variable, function or class in a module that can be imported without having to be explicitly named.
+The syntax for default exports is purposely easier to read because this is how modules were designed to be used.
+
+Having more than one default export will result in a syntax error.
+
+The big difference with default exports is that you don't need to use curly braces or make any mention of the value that is being imported, making the statement read more elegantly.
+
+The alias that is assigned to the imported module does not have to match its name in the actual module.
+
+### **MVC Frameworks**
+
+Model-View-Controller (MVC) is a design pattern that's been used for a long time in server-side langugages.
+It's a common way of designing software, and used by server-side frameworks such as Ruby On Rails and Django.
+
+MVC separates an application into three distinct, independent components that interact with each other:
+
+- **Models** are objects that implement the functionality for creating, reading, updating and deleting specific pieces of information about the application, as well as any other associated logic and behavior.
+
+- **Views** provide a visual representation of the model showing all the relevant information.
+  In a web application, this would be the HTML displayed on a web page.
+  Views also provide a way for user to interact with an application, usually via forms.
+
+- **Controllers** link models and views together by communicating between them. They respond to events, which are usually inputs from a user, process the information, then update the model and view accordingly.
+
+## Chapter 15 Next Steps
+
+### **Keep Your Knowledge Up to Date**
+
+- Subscribe to blogs
+
+- Write your own blog
+
+- Follow other JavaScript developers on Twitter
+
+- Attend conferences or local meetups
+
+- Read magazine articles
+
+- Contribute to an open-source project
+
+- Join a local or online user group
+
+- Sign up for the newsletters
+
+- Listen to podcasts
+
+- Read books or watch videos on more advanced topics
+
+### **Use Common JavaScript Coding Patterns**
+
+A pattern is a piece of code that solves a common problem and represents best practice.
+In JavaScript development, a pattern is the generally accepted way of achieving a specific goal, often because it's the best way of doing it.
+Another advantage of using standard coding practices is that it makes sharing code between developers far less painful.
+Another good practice is to follow a coding style-guide.
